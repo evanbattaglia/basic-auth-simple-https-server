@@ -105,7 +105,9 @@ if __name__ == '__main__':
 
     # SimpleHTTPServer Setup
     httpd = http.server.HTTPServer(('0.0.0.0', 4443), handler)
-    httpd.socket = ssl.wrap_socket(httpd.socket, certfile='./server.pem', server_side=True)
+    context = ssl.SSLContext(protocol=ssl.PROTOCOL_TLS_SERVER)
+    context.load_cert_chain(certfile='./server.pem')
+    httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
     try:
         if not os.path.isdir('./files'):
             os.makedirs('./files')
